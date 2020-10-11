@@ -19,10 +19,13 @@ arcpy.env.overwriteOutput = True
 inputFile = 'D:/AdvGIS/ARGOSTracking/Data/ARGOSData/1997dg.txt'
 outputFC = "D:/AdvGIS/ARGOSTracking/Scratch/ARGOStrack.shp"
 
+#set coordinate system
+outputSR = arcpy.SpatialReference(54002)
+
 ## Prepare a new feature class to which we'll add tracking points
 # Create an empty feature class; requires the path and name as separate parameters
 outPath,outName = os.path.split(outputFC)
-arcpy.CreateFeatureclass_management(outPath, outName)
+arcpy.CreateFeatureclass_management(outPath, outName, "POINT", "","","", outputSR)
 
 #%% Construct a while loop to iterate through all lines in the datafile
 

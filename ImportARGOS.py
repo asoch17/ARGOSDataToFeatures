@@ -9,13 +9,20 @@
 ## Created: Fall 2020
 ## Author: as986@duke.edu (for ENV859)
 ##---------------------------------------------------------------------
-
+#%%
 # Import modules
 import sys, os, arcpy
+
+arcpy.env.overwriteOutput = True
 
 # Set input variables (Hard-wired)
 inputFile = 'D:/AdvGIS/ARGOSTracking/Data/ARGOSData/1997dg.txt'
 outputFC = "D:/AdvGIS/ARGOSTracking/Scratch/ARGOStrack.shp"
+
+## Prepare a new feature class to which we'll add tracking points
+# Create an empty feature class; requires the path and name as separate parameters
+outPath,outName = os.path.split(outputFC)
+arcpy.CreateFeatureclass_management(outPath, outName)
 
 #%% Construct a while loop to iterate through all lines in the datafile
 
@@ -36,9 +43,9 @@ while lineString:
         
         # Extract attributes from the datum header line
         tagID = lineData[0]
-        date = lineData[3]
-        time = lineData[4]
-        locClass = lineData[7]
+        obsDate = lineData[3]
+        obsTime = lineData[4]
+        obsLC = lineData[7]
         
         # Extract location info from the next line
         line2String = inputFileObj.readline()
@@ -51,7 +58,7 @@ while lineString:
         obsLon= line2Data[5]
         
         # Print results to see how we're doing
-        print (tagID,"Lat:"+obsLat,"Long:"+obsLon,"Date:"+date,"Time:"+time,"LC:"+locClass)
+        print (tagID,"Lat:"+obsLat,"Long:"+obsLon,"Date:"+obsDate,"Time:"+obsTime,"LC:"+obsLC)
         
     # Move to the next line so the while loop progresses
     lineString = inputFileObj.readline()

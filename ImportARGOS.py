@@ -92,13 +92,13 @@ while lineString:
             # Convert the point to a point geometry object with spatial reference
             inputSR = arcpy.SpatialReference(4326)
             obsPointGeom = arcpy.PointGeometry(obsPoint,inputSR)
+            
+             #add a feature using our insert cursor
+            feature = cur.insertRow((obsPointGeom,tagID,obsLC,obsDate.replace(".","/") + " " + obsTime))
 
         #handle the error
         except Exception as e:
             print(f"Error adding recod {tagID} to the output")
-            
-        #add a feature using our insert cursor
-        feature = cur.insertRow((obsPointGeom,tagID,obsLC,obsDate.replace(".","/") + " " + obsTime))
         
     # Move to the next line so the while loop progresses
     lineString = inputFileObj.readline()

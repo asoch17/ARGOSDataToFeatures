@@ -15,12 +15,11 @@ import sys, os, arcpy
 
 arcpy.env.overwriteOutput = True
 
-# Set input variables (Hard-wired)
-inputFolder = 'D:/AdvGIS/ARGOSTracking/Data/ARGOSData'
-outputFC = "D:/AdvGIS/ARGOSTracking/Scratch/ARGOStrack.shp"
-
-#set coordinate system
-outputSR = arcpy.SpatialReference(54002)
+# Set input variables (user input)
+inputFolder = arcpy.GetParameterAsText(0)
+inputFiles = os.listdir(inputFolder)
+outputFC = arcpy.GetParameterAsText(1)
+outputSR = arcpy.GetParameterAsText(2)
 
 ## Prepare a new feature class to which we'll add tracking points
 # Create an empty feature class; requires the path and name as separate parameters
@@ -107,7 +106,7 @@ for inputFile in inputFiles:
     
             #handle the error
             except Exception as e:
-                print(f"Error adding recod {tagID} to the output")
+                arcpy.AddWarning(f"Error adding record {tagID} to the output")
             
         # Move to the next line so the while loop progresses
         lineString = inputFileObj.readline()

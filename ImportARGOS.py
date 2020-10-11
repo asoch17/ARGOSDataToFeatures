@@ -32,6 +32,9 @@ arcpy.AddField_management(outputFC,"TagID","LONG")
 arcpy.AddField_management(outputFC,"LC","TEXT")
 arcpy.AddField_management(outputFC,"Date","DATE")
 
+# Create the insert cursor
+cur = arcpy.da.InsertCursor(outputFC,['Shape@','TagID','LC','Date'])
+
 #%% Construct a while loop to iterate through all lines in the datafile
 
 # Open the ARGOS data file for reading
@@ -85,13 +88,23 @@ while lineString:
             obsPoint = arcpy.Point()
             obsPoint.X = obsLon
             obsPoint.Y = obsLat
+            
+            # Convert the point to a point geometry object with spatial reference
+            inputSR = arcpy.SpatialReference(4326)
+            obsPointGeom = arcpy.PointGeometry(obsPoint,inputSR)
 
         #handle the error
         except Exception as e:
             print(f"Error adding recod {tagID} to the output")
+            
+        #add a feature using our insert cursor
+        feature = cur.insertRow((obsPointGeom,tagID,obsLC,obsDate.replace(".","/") + " " + obsTime))
         
     # Move to the next line so the while loop progresses
     lineString = inputFileObj.readline()
+    
+#Delete the cursor object
+del cur
     
 #Close the file object
 inputFileObj.close()
